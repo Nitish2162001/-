@@ -1,0 +1,106 @@
+-- Table: EarthquakeOverview
+CREATE TABLE EarthquakeOverview (
+    id INT PRIMARY KEY,
+    magnitude DECIMAL(3,1),
+    date DATE,
+    epicenter_location VARCHAR(255),
+    nearest_major_city VARCHAR(100),
+    largest_in_century BOOLEAN,
+    affected_population INT,
+    children_affected INT
+);
+
+INSERT INTO EarthquakeOverview 
+VALUES (1, 7.7, '2025-03-28', '16km north of Sagaing', 'Mandalay', TRUE, 28000000, 6700000);
+
+-- Table: CasualtyReports
+CREATE TABLE CasualtyReports (
+    id INT PRIMARY KEY,
+    report_date DATE,
+    source VARCHAR(100),
+    deaths INT,
+    injuries INT,
+    missing INT
+);
+
+INSERT INTO CasualtyReports VALUES
+(1, '2025-04-03', 'de facto government', 3145, 4589, 221),
+(2, '2025-04-03', 'humanitarian/media', 3838, 4243, 500);
+
+-- Table: USGSEstimate
+CREATE TABLE USGSEstimate (
+    id INT PRIMARY KEY,
+    estimated_max_deaths INT,
+    note VARCHAR(255)
+);
+
+INSERT INTO USGSEstimate 
+VALUES (1, 10000, 'Death toll could surpass 10,000 as search continues');
+
+-- Table: AffectedRegions
+CREATE TABLE AffectedRegions (
+    id INT PRIMARY KEY,
+    region_name VARCHAR(100)
+);
+
+INSERT INTO AffectedRegions VALUES
+(1, 'Sagaing'),
+(2, 'Mandalay'),
+(3, 'Magway'),
+(4, 'Bago'),
+(5, 'Shan'),
+(6, 'Naypyitaw');
+
+-- Table: CountryAid
+CREATE TABLE CountryAid (
+    id INT PRIMARY KEY,
+    country_or_org VARCHAR(100),
+    pledged_amount_usd DECIMAL(12,2),
+    aid_description TEXT
+);
+
+INSERT INTO CountryAid VALUES
+(1, 'India', NULL, 'Two C-17 military aircraft with field hospital unit and 118 personnel, plus two navy ships carrying around 50 tonnes of relief material'),
+(2, 'China', 13900000, '135 search and rescue specialists, along with medical kits and drones'),
+(3, 'Singapore', NULL, '80-member team to assist with rescue efforts'),
+(4, 'United States', 2000000, 'To be dispersed through Myanmar-based humanitarian groups. Emergency response team from USAID'),
+(5, 'Malaysia', 2200000, '50-member disaster relief team'),
+(6, 'Thailand', NULL, 'Country also hit by quake has sent 55 air force personnel including medics and rescue specialists'),
+(7, 'Vietnam', 300000, 'More than 100 rescuers and medical staff'),
+(8, 'South Korea', 2000000, 'Aid through international organisations'),
+(9, 'Philippines', NULL, '114 rescue teams as well as medical assistance teams'),
+(10, 'Russia', NULL, '120 rescuers and supplies, plus medical team'),
+(11, 'Australia', 8500000, '$2 million through International Red Cross, $3.5 million to Australian NGOs and $3 million for emergency relief supplies and ASEAN support'),
+(12, 'New Zealand', 1140000, 'To Red Cross'),
+(13, 'UK', 12900000, 'Pledged in aid'),
+(14, 'Ireland', 6500000, 'Aid pledged'),
+(15, 'European Union', 2700000, 'Copernicus satellite system activated for emergency mapping. Supplies including tents, child protection kits, health, water and sanitation kits sent to UNICEF'),
+(16, 'Japan', 4000000, 'Emergency fund and disaster response experts dispatched');
+
+-- Table: SearchRescueTeams
+CREATE TABLE SearchRescueTeams (
+    id INT PRIMARY KEY,
+    country VARCHAR(100),
+    personnel_count INT,
+    team_description TEXT
+);
+
+INSERT INTO SearchRescueTeams VALUES
+(1, 'India', 118, 'Field hospital unit with navy ships and aircraft'),
+(2, 'China', 135, 'Search and rescue specialists'),
+(3, 'Singapore', 80, 'Rescue assistance team'),
+(4, 'Malaysia', 50, 'Disaster relief team'),
+(5, 'Thailand', 55, 'Air force personnel including medics and rescue specialists'),
+(6, 'Vietnam', 100, 'Rescuers and medical staff'),
+(7, 'Philippines', 114, 'Rescue and medical teams'),
+(8, 'Russia', 120, 'Rescuers and medical team');
+
+-- Table: QuadAid
+CREATE TABLE QuadAid (
+    id INT PRIMARY KEY,
+    total_commitment_usd DECIMAL(12,2),
+    statement TEXT
+);
+
+INSERT INTO QuadAid 
+VALUES (1, 20000000, 'India, Australia, Japan and the U.S. have committed humanitarian assistance worth over $20 million');

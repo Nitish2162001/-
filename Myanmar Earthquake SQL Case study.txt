@@ -1,0 +1,80 @@
+1. Categorize Countries Based on Aid Level ?
+
+SELECT 
+    country_or_org,
+    pledged_amount_usd,
+    CASE 
+        WHEN pledged_amount_usd >= 10000000 THEN 'High'
+        WHEN pledged_amount_usd >= 5000000 THEN 'Medium'
+        ELSE 'Low'
+    END AS aid_level
+FROM CountryAid
+WHERE pledged_amount_usd IS NOT NULL
+ORDER BY pledged_amount_usd DESC;
+
+2.Calculate Percentage Contribution of Each Country’s Rescue Team ?
+
+SELECT 
+    country,
+    personnel_count,
+    ROUND((personnel_count * 1.0 / t.total) * 100, 2) AS percent_of_total
+FROM SearchRescueTeams,
+     (SELECT SUM(personnel_count) AS total FROM SearchRescueTeams) t
+ORDER BY percent_of_total DESC;
+
+3.Find the Top 5 Countries by Normalized Aid Contribution ?
+
+-- CTE for merging aid and rescue (simulate FULL OUTER JOIN)
+
+WITH Merged AS (
+    SELECT 
+        a.country_or_org AS country,
+        a.pledged_amount_usd AS aid,
+        COALESCE(r.personnel_count, 0) AS rescue
+    FROM CountryAid a
+    LEFT JOIN SearchRescueTeams r ON a.country_or_org = r.country
+
+    UNION
+
+    SELECT 
+        r.country,
+        COALESCE(a.pledged_amount_usd, 0),
+        r.personnel_count
+    FROM SearchRescueTeams r
+    LEFT JOIN CountryAid a ON a.country_or_org = r.country
+),
+MaxVals AS (
+    SELECT 
+        MAX(aid) AS max_aid,
+        MAX(rescue) AS max_rescue
+    FROM Merged
+)
+
+-- Final select with normalized scores
+
+SELECT 
+    m.country,
+    m.aid,
+    m.rescue,
+    ROUND(m.aid / NULLIF(mx.max_aid, 0), 2) AS norm_aid,
+    ROUND(m.rescue / NULLIF(mx.max_rescue, 0), 2) AS norm_rescue,
+    ROUND((m.aid / NULLIF(mx.max_aid, 0) + m.rescue / NULLIF(mx.max_rescue, 0)) / 2, 2) AS final_score
+FROM Merged m
+JOIN MaxVals mx
+ORDER BY final_score DESC
+LIMIT 5;
+
+
+4.Rank Countries by Overall Contribution (aid + rescue)?
+
+SELECT 
+    ca.country_or_org AS country,
+    COALESCE(ca.pledged_amount_usd, 0) AS pledged_usd,
+    COALESCE(sr.personnel_count, 0) AS personnel,
+    (COALESCE(ca.pledged_amount_usd, 0) + COALESCE(sr.personnel_count * 10000, 0)) AS contribution_score
+FROM CountryAid ca
+LEFT JOIN SearchRescueTeams sr
+    ON ca.country_or_org = sr.country
+ORDER BY contribution_score DESC;
+
+
